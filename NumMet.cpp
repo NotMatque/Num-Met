@@ -60,11 +60,10 @@ double* gaussElim(double** A, double* b, unsigned int const n)
 	{
 		int indexMax = indexOfMax(A, n, row); // finding max element in this row 
 		
-		int temp = change[row]; 
-		change[row] = change[indexMax];
-		change[indexMax] = temp;
+		//int temp = change[row]; 
+		//change[row] = change[indexMax];
+		//change[indexMax] = temp;
 		
-
 		for (int j = row + 1; j < n; j++) // no. of current column
 		{
 			double a_ji = A[j][change[row]];
@@ -92,9 +91,118 @@ double* gaussElim(double** A, double* b, unsigned int const n)
 	return x;
 }
 
+/*
+void LUDecomp(double** A, double** L, double** U, unsigned int const n)
+{
+	
+	for (int row = 0; row < n; row++)
+	{
+		
+		// L creation
+		for (int col = 0; col < n; col++)
+		{
+			if (row > col)
+				L[row][col] = 0;
+			else if (row == col)
+				L[row][col] = 1;
+			else
+			{
+				L[row][col] = A[row][col];
+				for (int i = 0; i < col; i++)
+					L[row][col] -= L[row][i] * U[i][col];
+				L[row][col] /= U[col][col];
+			}
+		}
+
+		// U creation
+		for (int col = 0; col < n; col++)
+		{
+			if (row < col)
+				U = 0;
+			else
+			{
+				U[row][col] = A[row][col];
+				for (int i = 0; i < col; i++)
+					U[row][col] -= L[row][i] * U[i][col];
+			}
+		}
+		
+		
+		
+	}
+}*/
+
+
+void LUDecomp(double** A, double** L, double** U, unsigned int const n) 
+{
+	for (int i = 0; i < n; i++) // row
+	{
+		for (int j = 0; j < n; j++) // L creation
+		{
+			if (j < i)
+				L[j][i] = 0;
+			else 
+			{
+				L[j][i] = A[j][i];
+				for (int k = 0; k < i; k++) 
+				{
+					L[j][i] = L[j][i] - L[j][k] * U[k][i];
+				}
+			}
+		}
+
+		for (int j = 0; j < n; j++) // U creation
+		{
+			if (j < i)
+				U[i][j] = 0;
+			else if (j == i)
+				U[i][j] = 1;
+			else 
+			{
+				U[i][j] = A[i][j] / L[i][i];
+				for (int k = 0; k < i; k++) 
+				{
+					U[i][j] = U[i][j] - ((L[i][k] * U[k][j]) / L[i][i]);
+				}
+			}
+		}
+	}
+}
+
 int main()
 {   
-	double** A = new double* [5];
+	double** A = new double* [3];
+	for (int i = 0; i < 3; i++)
+		A[i] = new double[3];
+
+	A[0][0] = 60;	A[0][1] = 30;	A[0][2] = 20;
+	A[1][0] = 30;	A[1][1] = 20;	A[1][2] = 15;
+	A[2][0] = 20;	A[2][1] = 15;	A[2][2] = 12;
+
+	double** L = new double* [3];
+	for (int i = 0; i < 3; i++)
+		L[i] = new double[3];
+
+	double** U = new double* [3];
+	for (int i = 0; i < 3; i++)
+		U[i] = new double[3];
+
+	LUDecomp(A, L, U, 3);
+	
+	std::cout << "A:\n";
+	printMatrix(A, 3, 3);
+
+	std::cout << "L:\n";
+	printMatrix(L, 3, 3);
+
+	std::cout << "U:\n";
+	printMatrix(U, 3, 3);
+
+	return 0;
+}
+
+/*
+double** A = new double* [5];
 	for (int i = 0; i < 5; i++)
 		A[i] = new double[5];
 
@@ -112,5 +220,4 @@ int main()
 	{
 		std::cout << result[i] << "\n";
 	}
-	return 0;
-}
+*/
