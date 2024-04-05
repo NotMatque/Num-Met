@@ -35,7 +35,7 @@ double* NewtonToNatural(double* const b, double* const x, unsigned int n)
 	return a;
 }
 
-// Lagrange Interpolation Evaluation
+// Evaluation by Lagrange Interpolation
 // (arr x_i, arr y_i, no. of points, value X)
 double LagrInterpolEval(double* const x, double* const y, unsigned int const n, double const X)
 {
