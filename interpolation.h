@@ -20,7 +20,7 @@ double hornerNewtonEval(double* const b, double* const x, unsigned int n, double
 	return result;
 }
 
-// Allows change from Newnton polynomial form to natural form
+// Allows change from Newton polynomial form to natural form
 // (arr b_i, arr x_i, polynomial degree)
 double* NewtonToNatural(double* const b, double* const x, unsigned int n)
 {
