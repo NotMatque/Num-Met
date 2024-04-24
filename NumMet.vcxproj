@@ -131,6 +131,7 @@
     <ClCompile Include="NumMet.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="integrals.h" />
     <ClInclude Include="interpolation.h" />
     <ClInclude Include="linearEquations.h" />
   </ItemGroup>

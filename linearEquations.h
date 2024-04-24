@@ -77,10 +77,11 @@ void DoolittleLU(double** A, unsigned int size, double** L, double** U)
 	}
 
 	// Checking for 0s on the diagonal of A
+	/*
 	unsigned int* change = new unsigned int[size];
 	for (int i = 0; i < size; i++)
-		change[i] = i;
-
+		change[i] = i; 
+	
 	for (int i = 0; i < size; i++)
 	{
 		if (A[change[i]][i] == 0)
@@ -91,24 +92,39 @@ void DoolittleLU(double** A, unsigned int size, double** L, double** U)
 			i = 0;
 		}
 	}
+	*/
+	for (int i = 0; i < size; i++)
+	{
+		if (A[i][i] == 0)
+		{
+			// Copy values to next row
+			for (int j = 0; j < size; j++)
+			{
+				double temp = A[i][j];
+				A[i][j] = A[size % (i + 1)][j];
+				A[size % (i + 1)][j] = temp;
+			}
+			i = 0;
+		}
+	}
 
 	// Doolittle's algorithm
 	for (int j = 0; j < size; j++) // j = col; i = row
 	{
-		if (A[change[j]][j] == 0)
+		if (A[j][j] == 0)
 			exit(0);
 
 		for (int i = 0; i <= j; i++) // U
 		{
-			U[change[i]][j] = A[change[i]][j];
+			U[i][j] = A[i][j];
 			for (int k = 0; k < i; k++)
-				U[change[i]][j] -= L[change[i]][k] * U[change[k]][j];
+				U[i][j] -= L[i][k] * U[k][j];
 		}
 		for (int i = j + 1; i < size; i++) // L
 		{
-			L[change[i]][j] = A[change[i]][j] / U[change[j]][j];
+			L[i][j] = A[i][j] / U[j][j];
 			for (int k = 0; k < j; k++)
-				L[change[i]][j] -= (L[change[i]][k] * U[change[k]][j]) / U[change[j]][j];
+				L[i][j] -= (L[i][k] * U[k][j]) / U[j][j];
 		}
 	}
 }
