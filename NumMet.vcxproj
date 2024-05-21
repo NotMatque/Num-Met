@@ -128,6 +128,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="integrals.cpp" />
+    <ClCompile Include="interpolation.cpp" />
+    <ClCompile Include="linearEquations.cpp" />
     <ClCompile Include="NumMet.cpp" />
   </ItemGroup>
   <ItemGroup>

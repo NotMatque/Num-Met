@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NumMet", "NumMet.vcxproj", "{793F8747-B1F6-458E-9452-B7079086E739}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NumMetUnitTest", "..\NumMetUnitTest\NumMetUnitTest.vcxproj", "{D9F898A3-B377-4082-8729-1B51E04ED18D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{793F8747-B1F6-458E-9452-B7079086E739}.Release|x64.Build.0 = Release|x64
 		{793F8747-B1F6-458E-9452-B7079086E739}.Release|x86.ActiveCfg = Release|Win32
 		{793F8747-B1F6-458E-9452-B7079086E739}.Release|x86.Build.0 = Release|Win32
+		{D9F898A3-B377-4082-8729-1B51E04ED18D}.Debug|x64.ActiveCfg = Debug|x64
+		{D9F898A3-B377-4082-8729-1B51E04ED18D}.Debug|x64.Build.0 = Debug|x64
+		{D9F898A3-B377-4082-8729-1B51E04ED18D}.Debug|x86.ActiveCfg = Debug|Win32
+		{D9F898A3-B377-4082-8729-1B51E04ED18D}.Debug|x86.Build.0 = Debug|Win32
+		{D9F898A3-B377-4082-8729-1B51E04ED18D}.Release|x64.ActiveCfg = Release|x64
+		{D9F898A3-B377-4082-8729-1B51E04ED18D}.Release|x64.Build.0 = Release|x64
+		{D9F898A3-B377-4082-8729-1B51E04ED18D}.Release|x86.ActiveCfg = Release|Win32
+		{D9F898A3-B377-4082-8729-1B51E04ED18D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
