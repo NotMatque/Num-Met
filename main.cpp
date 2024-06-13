@@ -1,71 +1,102 @@
 ﻿//TODO: linearEquations.h: Gauss-Crout
 
 #include <iostream>
-#include <iomanip>
 
+#include "helpful.h"
 #include "interpolation.h"
 #include "linearEquations.h"
 #include "integrals.h"
+#include "approx.h"
 
-void printArr(double* const arr, unsigned int const size)
+double funcTest(double X)
 {
-	for (int i = 0; i < size; i++)
-		printf("%.6lf\t", arr[i]);
-	std::cout << "\n";
+	return sin(-X) + exp(-X) - pow(X, 3);
 }
 
-void printArr2D(double** const arr, unsigned int rows, unsigned int columns)
+double func(double T)
 {
-	for (int i = 0; i < rows; i++)
+	double alpha = -1.e-12;
+	double beta = 0;
+	return alpha * (pow(T,4) - beta);
+}
+
+// (pointer to a func, step, beg value, end case)
+double me(double(*func)(double), double step, double T_0, double tau)
+{
+	double result = T_0;
+	for (int i = 0; i < tau / step; i++)
 	{
-		for (int j = 0; j < columns; j++)
-			printf("%.6lf\t", arr[i][j]);
-		std::cout << "\n";
+		result = result + step * func(result);
 	}
+	return result;
 }
 
-double** gramSchmidt(double** F, double a, double b, unsigned int n)
+// (pointer to a func, step, beg value, end case)
+double me2(double(*func)(double), double step, double T_0, double tau)
 {
-	double** G = (double**)malloc(5 * sizeof(double*));
-	for (int i = 0; i < n; i++)
-		G[i] = (double*)malloc(5 * sizeof(double));
-
-	for (int i = 0; i < n; i++)
+	double result = T_0;
+	for (int i = 0; i < tau / step; i++)
 	{
-		// Copy row
-		for (int k = 0; k < n; k++)
-			G[i][k] = F[i][k];
-
-		for (int j = 0; j < i; j++)
-		{
-			double ratio = quad_Horner4(F[i], n, G[j], n, a, b, 1.e5) / quad_Horner4(G[j], n, G[j], n, a, b, 1.e5);
-			for (int k = 0; k < n; k++)
-			{
-				G[i][k] -= ratio * G[j][k];
-			}
-		}
+		result = result + step * func(result + 0.5 * step * func(result));
 	}
-	
-	return G;
+	return result;
 }
 
+// (pointer to a func, step, beg value, end case)
+double me3(double(*func)(double), double step, double T_0, double tau)
+{
+	double result = T_0;
+	for (int i = 0; i < tau / step; i++)
+	{
+		result = result + 0.5 * step * (func(result) + func(result + step * func(result))) ;
+	}
+	return result;
+}
+
+double k1(double Y, double step)
+{
+	return func(Y);
+}
+double k2(double Y, double step)
+{
+	return func(Y + 0.5 * step * k1(Y, step));
+}
+double k3(double Y, double step)
+{
+	return func(Y + 0.5 * step * k2(Y, step));
+}
+double k4(double Y, double step)
+{
+	return func(Y + step * k3(Y, step));
+}
+double phi(double Y, double step)
+{
+	return 1/6 * (k1(Y, step) + 2 * k2(Y, step) + 2 * k3(Y, step) + k4(Y, step));
+}
+
+double rangeKutt(double (*func)(double), double step, double T_0, double tau)
+{
+	double result = T_0;
+	for (int i = 0; i < tau / step; i++)
+	{
+		result = result + step * phi(result, step);
+	}
+	return result;
+}
+
+// 877.7543 <- wynik poprawny
 int main()
-{   
-	double** F = new double* [5];
-	for (int i = 0; i < 5; i++)
-		F[i] = new double[5];
-
-	F[0][0] = 1; F[0][1] = 0; F[0][2] = 0; F[0][3] = 0; F[0][4] = 0;
-	F[1][0] = 0; F[1][1] = 1; F[1][2] = 0; F[1][3] = 0; F[1][4] = 0;
-	F[2][0] = 0; F[2][1] = 0; F[2][2] = 1; F[2][3] = 0; F[2][4] = 0;
-	F[3][0] = 0; F[3][1] = 0; F[3][2] = 0; F[3][3] = 1; F[3][4] = 0;
-	F[4][0] = 0; F[4][1] = 0; F[4][2] = 0; F[4][3] = 0; F[4][4] = 1;
-
-	printArr2D(F, 5, 5);
-	std::cout << "\n";
-	double** G = gramSchmidt(F, 0, 1, 5);
-	printArr2D(G, 5, 5);
-
+{
+	double value = 877.7542611;
+	printf("%.7lf\n", value);
+	double temp = me(&func, 0.1, 1200, 300);
+	printf("%.7lf, delta = %.7lf\n", temp, temp - value);
+	temp = me2(&func, 0.1, 1200, 300);
+	printf("%.7lf, delta = %.7lf\n", temp, temp - value);
+	temp = me3(&func, 0.1, 1200, 300);
+	printf("%.7lf, delta = %.7lf\n", temp, temp - value);
+	temp = rangeKutt(&func, 0.1, 1200, 300);
+	printf("%.7lf, delta = %.7lf\n", temp, temp - value);
 	return 0;
 }
 

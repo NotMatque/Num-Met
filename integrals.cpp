@@ -40,7 +40,7 @@ double quadGaus4(double (*func)(double), double const a, double const b, unsigne
 	return result * dx / 2;
 }
 
-double quad_Horner4(double* poly1, unsigned int const deg1, double* poly2, unsigned int const deg2, double a, double b, unsigned int steps)
+double quadGaus4_2xHorner(double* poly1, unsigned int const deg1, double* poly2, unsigned int const deg2, double a, double b, unsigned int steps)
 {
 	double result = 0;
 	double X[5] = { -0.90618f, -0.538469f, 0, 0.538469f, 0.90618f };
@@ -57,6 +57,29 @@ double quad_Horner4(double* poly1, unsigned int const deg1, double* poly2, unsig
 		{
 			double arg = (x2 - x1) / 2 * X[j] + ((x1 + x2) / 2);
 			result += A[j] * hornerEval(poly1, deg1, arg) * hornerEval(poly2, deg2, arg);
+		}
+
+	}
+	return result * dx / 2;
+}
+
+double quadGaus4_FuncxHorner(double (*func)(double), double* poly, unsigned int const deg, double a, double b, unsigned int steps)
+{
+	double result = 0;
+	double X[5] = { -0.90618f, -0.538469f, 0, 0.538469f, 0.90618f };
+	double A[5] = { 0.236927, 0.478629, 0.568889, 0.478629, 0.236927 };
+
+	double dx = (b - a) / steps; // Size of 1 step
+
+	for (int i = 0; i < steps; i++)
+	{
+		double x1 = i * dx + a; // begining
+		double x2 = (i + 1) * dx + a; // end
+
+		for (int j = 0; j < 5; j++)
+		{
+			double arg = (x2 - x1) / 2 * X[j] + ((x1 + x2) / 2);
+			result += A[j] * func(arg) * hornerEval(poly, deg, arg);
 		}
 
 	}

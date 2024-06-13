@@ -123,3 +123,28 @@ void DoolittleLU(double** A, unsigned int size, double** L, double** U)
 		}
 	}
 }
+
+double** gramSchmidt(double** F, double a, double b, unsigned int n)
+{
+	double** G = (double**)malloc(5 * sizeof(double*));
+	for (int i = 0; i < n; i++)
+		G[i] = (double*)malloc(5 * sizeof(double));
+
+	for (int i = 0; i < n; i++)
+	{
+		// Copy row
+		for (int k = 0; k < n; k++)
+			G[i][k] = F[i][k];
+
+		for (int j = 0; j < i; j++)
+		{
+			double ratio = quadGaus4_2xHorner(F[i], n, G[j], n, a, b, 1.e5) / quadGaus4_2xHorner(G[j], n, G[j], n, a, b, 1.e5);
+			for (int k = 0; k < n; k++)
+			{
+				G[i][k] -= ratio * G[j][k];
+			}
+		}
+	}
+
+	return G;
+}

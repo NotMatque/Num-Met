@@ -128,12 +128,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="approx.cpp" />
     <ClCompile Include="integrals.cpp" />
     <ClCompile Include="interpolation.cpp" />
     <ClCompile Include="linearEquations.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="approx.h" />
+    <ClInclude Include="helpful.h" />
     <ClInclude Include="integrals.h" />
     <ClInclude Include="interpolation.h" />
     <ClInclude Include="linearEquations.h" />
