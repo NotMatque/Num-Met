@@ -8,95 +8,64 @@
 #include "integrals.h"
 #include "approx.h"
 
-double funcTest(double X)
+double func1(double X)
 {
-	return sin(-X) + exp(-X) - pow(X, 3);
+	return pow(X, 3) + pow(X, 2) - 3 * X - 3;
+}
+double func2(double X)
+{
+	return pow(X, 2) - 2;
+}
+double func3(double X)
+{
+	return sin(pow(X,2)) - pow(X,2);
+}
+double func4(double X)
+{
+	return sin(pow(X, 2)) - pow(X, 2) + 0.5;
 }
 
-double func(double T)
+double bissec(double(*func)(double), double beg, double end, double tolerance)
 {
-	double alpha = -1.e-12;
-	double beta = 0;
-	return alpha * (pow(T,4) - beta);
-}
+	if (func(beg) * func(end) >= 0)
+		exit(-1);
 
-// (pointer to a func, step, beg value, end case)
-double me(double(*func)(double), double step, double T_0, double tau)
-{
-	double result = T_0;
-	for (int i = 0; i < tau / step; i++)
+	double temp; unsigned int loop = 0;
+	while (loop < 1000)
 	{
-		result = result + step * func(result);
-	}
-	return result;
-}
+		temp = (beg + end) / 2;
+		if (fabs(func(temp)) < tolerance)
+			return temp;
 
-// (pointer to a func, step, beg value, end case)
-double me2(double(*func)(double), double step, double T_0, double tau)
+		if (func(beg) * func(temp) < 0)
+			end = temp;
+		else
+			beg = temp;
+
+		loop++;
+	}
+
+	return beg;
+}
+double newtonRaphson(double(*func)(double), double X, double tolerance)
 {
-	double result = T_0;
-	for (int i = 0; i < tau / step; i++)
+	// How to numerical dif?
+	// f'(x) = (f(x+h) - f(x-h)) / 2h
+	unsigned int loop = 0;
+	double h = 1.e-12;
+	while (loop++ < 1000)
 	{
-		result = result + step * func(result + 0.5 * step * func(result));
+		if (fabs(func(X)) < tolerance)
+			return X;
+		else
+			X -= func(X) / ((func(X + h) - func(X - h)) / (2 * h));
 	}
-	return result;
+
+	return X + 1;
 }
 
-// (pointer to a func, step, beg value, end case)
-double me3(double(*func)(double), double step, double T_0, double tau)
-{
-	double result = T_0;
-	for (int i = 0; i < tau / step; i++)
-	{
-		result = result + 0.5 * step * (func(result) + func(result + step * func(result))) ;
-	}
-	return result;
-}
-
-double k1(double Y, double step)
-{
-	return func(Y);
-}
-double k2(double Y, double step)
-{
-	return func(Y + 0.5 * step * k1(Y, step));
-}
-double k3(double Y, double step)
-{
-	return func(Y + 0.5 * step * k2(Y, step));
-}
-double k4(double Y, double step)
-{
-	return func(Y + step * k3(Y, step));
-}
-double phi(double Y, double step)
-{
-	return 1/6 * (k1(Y, step) + 2 * k2(Y, step) + 2 * k3(Y, step) + k4(Y, step));
-}
-
-double rangeKutt(double (*func)(double), double step, double T_0, double tau)
-{
-	double result = T_0;
-	for (int i = 0; i < tau / step; i++)
-	{
-		result = result + step * phi(result, step);
-	}
-	return result;
-}
-
-// 877.7543 <- wynik poprawny
 int main()
 {
-	double value = 877.7542611;
-	printf("%.7lf\n", value);
-	double temp = me(&func, 0.1, 1200, 300);
-	printf("%.7lf, delta = %.7lf\n", temp, temp - value);
-	temp = me2(&func, 0.1, 1200, 300);
-	printf("%.7lf, delta = %.7lf\n", temp, temp - value);
-	temp = me3(&func, 0.1, 1200, 300);
-	printf("%.7lf, delta = %.7lf\n", temp, temp - value);
-	temp = rangeKutt(&func, 0.1, 1200, 300);
-	printf("%.7lf, delta = %.7lf\n", temp, temp - value);
 	return 0;
 }
 
